@@ -6,6 +6,9 @@
 
 <% if not @sentence.nil? %>
 <%=@sentence.contents  %><br/>
+<% if not @sentence.meaning.empty? %>
+Aunque quiso decir <%= @sentence.meaning %>  :/<br/>
+<% end %>
 <%=@sentence.speaker  %><br/>
 <% end %>
 

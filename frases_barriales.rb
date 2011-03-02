@@ -23,16 +23,17 @@ DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/my.db")
 class Sentence
     include DataMapper::Resource
     property :id, Serial
-    property :contents, Text
-    property :speaker, String
+    property :contents, Text, :required => true
+    property :speaker, String, :required => true
+    property :meaning, String
     property :created_at, DateTime
     
     def self.random
       Sentence.first(:limit => 1, :offset =>rand(Sentence.count))      
     end
 end
-# automatically create the post table
-Sentence.auto_migrate! unless Sentence.storage_exists?
+# automatically upgrade changes , dangerous
+Sentence.auto_upgrade! #unless Sentence.storage_exists?
 
 post '/' do
     @sentence = Sentence.random 
@@ -50,13 +51,21 @@ get '/mumimama' do
   erb :new
 end
 
+get '/postToFB' do
+  current_user.facebook.feed!(
+  :message => session["contents"], 
+  :name => session["speaker"]
+)
+end
 
 # create new task   
 post '/sentences/create' do
-  sentence = Sentence.new(:contents => params[:contents], :speaker => params[:who])
+  sentence = Sentence.new(:contents => params[:contents], 
+                          :speaker => params[:speaker],
+                          :meaning => params[:meaning] )
   if sentence.save
     status 201
-    flash[:notice] = "Nueva frase creada y almacenada ;)"
+    flash[:notice] = "Frase creada, tenemos #{Sentence.count} frases ueueue ;)"
     redirect '/mumimama'
 #    redirect '/task/'+task.id.to_s  
   else

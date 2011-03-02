@@ -1,6 +1,23 @@
 
 <%= flash[:notice] %>
 <p>
-<%= erb(:new_sentence) %>
+<form action="/sentences/create" method="POST">
+<table>
+  <tr>
+   <td>La frase:<td/>
+   <td><input id="contents" type="text" name="contents" style="width:350px" ></td>
+  </tr>
+  <tr>
+    <td>Pero quiso decir...<td/>
+    <td><input type="text" name="meaning" id="meaning" style="width:350px">(opcional)</td>
+  </tr>
+  <tr>
+    <td>  El perpetrador:<td/>
+    <td><input type="text" name="speaker" id="speaker" style="width:100px" ></td>
+  </tr>
+</table>
+
+  <input type="submit" value="Nueva frase!"/>
+</form>
 </p>
 <a href="/">ver la de hoy</a>
