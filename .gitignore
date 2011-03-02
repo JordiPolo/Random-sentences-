@@ -1,2 +1,2 @@
-*.lock
 *.db
+.redcar/tags

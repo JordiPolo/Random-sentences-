@@ -1,22 +1,19 @@
-require 'rubygems'
+require 'rubygems' #for datamapper
 require 'sinatra'
-require 'omniauth/oauth'
-require 'datamapper'
-require 'rack-flash'
+require 'omniauth/oauth' #FB
+require 'datamapper' 
+require 'rack-flash' # the flash[] object
 
 enable :sessions
-use Rack::Flash
+use Rack::Flash 
 
-#Here you have to put your own Application ID and Secret
+#http://apps.facebook.com/frases_barriales/
 APP_ID = "205413256141281"
 APP_SECRET = "4d3679eb622a8c46293af883f640037f"
 
 use OmniAuth::Builder do
- # provider :facebook, APP_ID, APP_SECRET, { :scope => 'email, status_update, publish_stream' }
   provider :facebook, APP_ID, APP_SECRET, { :scope => 'status_update, publish_stream' }
 end
-
-
 
 
 
@@ -37,11 +34,13 @@ end
 # automatically create the post table
 Sentence.auto_migrate! unless Sentence.storage_exists?
 
+post '/' do
+    @sentence = Sentence.random 
+    erb :index
+end
+
 
 get '/' do
-    @articles = []
-    @articles << {:title => 'Deploying Rack-based apps in Heroku', :url => 'http://docs.heroku.com/rack'}
-    @articles << {:title => 'Learn Ruby in twenty minutes', :url => 'http://www.ruby-lang.org/en/documentation/quickstart/'}
     @sentence = Sentence.random 
     erb :index
 end
@@ -57,7 +56,7 @@ post '/sentences/create' do
   sentence = Sentence.new(:contents => params[:contents], :speaker => params[:who])
   if sentence.save
     status 201
-    flash[:notice] = "Nueva frase creada ;)"
+    flash[:notice] = "Nueva frase creada y almacenada ;)"
     redirect '/mumimama'
 #    redirect '/task/'+task.id.to_s  
   else
@@ -66,8 +65,6 @@ post '/sentences/create' do
     redirect '/mumimama'   
   end
 end
-
-
 
 
 
