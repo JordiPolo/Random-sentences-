@@ -2,6 +2,7 @@
 <%=session['fb_error']%>
 <%= flash[:notice] %>
 
+<div style="float:center; text-align:center;">
 <h3><%= 'Eeein ' + session['fb_auth']['user_info']['first_name'] + ', ' if session['fb_token'] %>
     tu frase del dia</h3>
 
@@ -17,13 +18,17 @@ Aunque quiso decir <%= @sentence.meaning %>  :/<br/>
 <% if session['fb_token'] %>
   <a href="/postToFB">Poné en Facebook</a>
 <% end %>
+</div>
 
-
-<div id="hall" style="float:right;">
-Hall of Infame </br>
+<div id="hall" style="margin-top:10px; float:right; text-align:center; padding:0px;background:#F3F3F3; ">
+<div id="hall_title" style="padding:5px;background:#A7C942;">
+Hall of Infame 
+</div>
+<div id="infames" style="margin:10px">
 <% @ranking.each do |a| %>
 <%= a[1] %>: <%= a[0] %><br/>
 <% end %>
+</div>
 </div>
 
 

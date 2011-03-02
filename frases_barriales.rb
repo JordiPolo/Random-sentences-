@@ -62,7 +62,7 @@ get '/' do
     count = Sentence.count( :speaker => n )
     ranking[count] = n
   end
-  @ranking = ranking.sort.reverse!
+  @ranking = ranking.sort.reverse!.first(5)
   
   erb :index
 end
