@@ -2,6 +2,7 @@ require 'rubygems' #for datamapper
 require 'sinatra'
 require 'omniauth/oauth' #FB
 require 'datamapper' 
+require 'dm-aggregates'
 require 'rack-flash' # the flash[] object
 require 'fb_graph'
 
@@ -40,7 +41,7 @@ def get_sentence
       @sentence = Sentence.random 
       session["contents"] = @sentence.contents
       session["name"] = @sentence.speaker
-      session["meaning"] = @sentence.meaning
+#      session["meaning"] = @sentence.meaning
 end
 
 post '/' do
@@ -50,7 +51,19 @@ end
 
 
 get '/' do
-  get_sentence  
+  get_sentence
+  names = []
+  Sentence.all.each do |s|
+    names << s.speaker  
+  end
+  names.uniq!
+  ranking ={}
+  names.each do |n|
+    count = Sentence.count( :speaker => n )
+    ranking[count] = n
+  end
+  @ranking = ranking.sort.reverse!
+  
   erb :index
 end
 
@@ -76,6 +89,10 @@ end
 
 # create new task   
 post '/sentences/create' do
+  meaning = params[:meaning]
+  if not meaning.nil?
+    meaning = meaning[0..35]
+  end
   sentence = Sentence.new(:contents => params[:contents], 
                           :speaker => params[:speaker],
                           :meaning => params[:meaning] )

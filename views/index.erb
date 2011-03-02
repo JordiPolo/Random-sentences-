@@ -19,7 +19,12 @@ Aunque quiso decir <%= @sentence.meaning %>  :/<br/>
 <% end %>
 
 
-
+<div id="hall" style="float:right;">
+Hall of Infame </br>
+<% @ranking.each do |a| %>
+<%= a[1] %>: <%= a[0] %><br/>
+<% end %>
+</div>
 
 
 <!--
