@@ -67,6 +67,11 @@ get '/' do
   erb :index
 end
 
+get '/todas_las_frases' do
+  @sentences = Sentence.all
+  erb :all_sentences
+end
+
 # new task
 get '/mumimama' do
   erb :new

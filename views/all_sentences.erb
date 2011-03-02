@@ -1,0 +1,10 @@
+
+<% @sentences.each do |s| %>
+<p>
+<%=s.contents  %><br/>
+<% if not s.meaning.empty? %>
+Quizá quiso decir <%= s.meaning %>  :/<br/>
+<% end %>
+<%=s.speaker  %><br/>
+</p>
+<% end %>
