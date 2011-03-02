@@ -75,9 +75,9 @@ def get_ranking
   ranking ={}
   names.each do |n|
     count = Sentence.count( :speaker => n )
-    ranking[count] = n
+    ranking[n] = count
   end
-  ranking.sort.reverse!.first(5)
+  ranking.sort{|a,b| a[1] <=> b[1]}.reverse!.first(5)
   
 end
 
