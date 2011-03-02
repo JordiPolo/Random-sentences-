@@ -1,3 +1,4 @@
+#encoding: utf-8
 require 'rubygems' #for datamapper
 require 'sinatra'
 require 'omniauth/oauth' #FB
@@ -44,14 +45,28 @@ def get_sentence
 #      session["meaning"] = @sentence.meaning
 end
 
+#facebook calls this
 post '/' do
   get_sentence
   erb :index
 end
 
+def solve_names
+  Sentence.all.each do |sentence|
+    if sentence.speaker == "Vic" or sentence.speaker == "Victor"
+      sentence.speaker = "Víctor"
+      sentence.save
+    elsif sentence.speaker =="Johnny"
+      sentence.speaker = "John"
+      sentence.save
+    elsif sentence.speaker =="Alvaro"
+      sentence.speaker = "Álvaro"
+      sentence.save
+    end
+  end
+end
 
-get '/' do
-  get_sentence
+def get_ranking
   names = []
   Sentence.all.each do |s|
     names << s.speaker  
@@ -62,12 +77,19 @@ get '/' do
     count = Sentence.count( :speaker => n )
     ranking[count] = n
   end
-  @ranking = ranking.sort.reverse!.first(5)
+  ranking.sort.reverse!.first(5)
   
+end
+
+get '/' do
+  get_sentence
+  @ranking = get_ranking
+    
   erb :index
 end
 
 get '/todas_las_frases' do
+  solve_names 
   @sentences = Sentence.all
   erb :all_sentences
 end
