@@ -61,7 +61,7 @@ end
 
 
 get '/postToFB' do
-  me = FbGraph::User.me(  session['fb_token'])  
+  me = FbGraph::User.me( session['fb_token'])  
   me.feed!(
   :message => "#{session["speaker"]} dijo:",
   :name => "ein", 
