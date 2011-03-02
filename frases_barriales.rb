@@ -33,7 +33,7 @@ class Sentence
     end
 end
 # automatically upgrade changes , dangerous
-Sentence.auto_upgrade! #unless Sentence.storage_exists?
+Sentence.auto_migrate! #unless Sentence.storage_exists?
 
 post '/' do
     @sentence = Sentence.random 
