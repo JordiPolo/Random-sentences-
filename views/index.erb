@@ -1,5 +1,6 @@
 
 <%=session['fb_error']%>
+<%= flash[:notice] %>
 
 <h3><%= 'Eeein ' + session['fb_auth']['user_info']['first_name'] + ', ' if session['fb_token'] %>
     tu frase del dia</h3>

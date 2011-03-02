@@ -40,6 +40,7 @@ def get_sentence
       @sentence = Sentence.random 
       session["contents"] = @sentence.contents
       session["name"] = @sentence.speaker
+      session["meaning"] = @sentence.meaning
 end
 
 post '/' do
@@ -62,9 +63,14 @@ end
 get '/postToFB' do
   me = FbGraph::User.me(  session['fb_token'])  
   me.feed!(
-  :message => session["contents"], 
-  :name => session["speaker"]
-)
+  :message => "#{session["speaker"]} dijo:",
+  :name => "ein", 
+  :description => "vaaamo"
+#  :name => "perpetrada por: #{session['speaker']}"
+  )
+  flash[:notice] = "Enviado a tu FB"
+  redirect '/'
+  
 end
 
 
