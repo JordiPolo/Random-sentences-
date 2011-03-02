@@ -3,6 +3,7 @@ require 'sinatra'
 require 'omniauth/oauth' #FB
 require 'datamapper' 
 require 'rack-flash' # the flash[] object
+require 'fb_graph'
 
 enable :sessions
 use Rack::Flash 
@@ -33,17 +34,23 @@ class Sentence
     end
 end
 # automatically upgrade changes , dangerous
-Sentence.auto_migrate! #unless Sentence.storage_exists?
+Sentence.auto_migrate! unless Sentence.storage_exists?
+
+def get_sentence
+      @sentence = Sentence.random 
+      session["contents"] = @sentence.contents
+      session["name"] = @sentence.speaker
+end
 
 post '/' do
-    @sentence = Sentence.random 
-    erb :index
+  get_sentence
+  erb :index
 end
 
 
 get '/' do
-    @sentence = Sentence.random 
-    erb :index
+  get_sentence  
+  erb :index
 end
 
 # new task
@@ -51,12 +58,15 @@ get '/mumimama' do
   erb :new
 end
 
+
 get '/postToFB' do
-  current_user.facebook.feed!(
+  me = FbGraph::User.me(  session['fb_token'])  
+  me.feed!(
   :message => session["contents"], 
   :name => session["speaker"]
 )
 end
+
 
 # create new task   
 post '/sentences/create' do

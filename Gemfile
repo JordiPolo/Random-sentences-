@@ -10,4 +10,5 @@ gem 'datamapper'
 gem 'dm-postgres-adapter'
 gem 'dm-sqlite-adapter'
 gem 'rack-flash'
+gem 'fb_graph'
 # gem "rails"

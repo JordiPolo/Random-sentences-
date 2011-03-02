@@ -1,6 +1,7 @@
-1299063515
+1299066204
 APP_ID	/home/jordi/source/frases_barrio/frases_barriales.rb	APP_ID =
 APP_SECRET	/home/jordi/source/frases_barrio/frases_barriales.rb	APP_SECRET =
 Sentence	/home/jordi/source/frases_barrio/frases_barriales.rb	class Sentence
 clear_session	/home/jordi/source/frases_barrio/frases_barriales.rb	def clear_session
+get_sentence	/home/jordi/source/frases_barrio/frases_barriales.rb	def get_sentence
 random	/home/jordi/source/frases_barrio/frases_barriales.rb	    def self.random
