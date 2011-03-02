@@ -14,9 +14,9 @@ Aunque quiso decir <%= @sentence.meaning %>  :/<br/>
 <% end %>
 
 
-
-<a href="/postToFB">Poné en Facebook</a>
-
+<% if session['fb_token'] %>
+  <a href="/postToFB">Poné en Facebook</a>
+<% end %>
 
 
 
