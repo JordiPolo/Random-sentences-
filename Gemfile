@@ -11,5 +11,5 @@ gem 'dm-postgres-adapter'
 gem 'dm-sqlite-adapter'
 gem 'rack-flash'
 gem 'fb_graph'
-#gem 'i18n'
+gem 'i18n'
 # gem "rails"
