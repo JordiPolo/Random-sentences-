@@ -139,7 +139,7 @@ get '/postToFB' do
   :picture => "http://frasesbarrio.heroku.com/images/logo.jpg",
   :attribution => APP_ID
   )
-  flash[:notice] = "Enviado a tu FB"
+  flash[:notice] = "Enviado a tu muro"
   redirect '/'
   
 end

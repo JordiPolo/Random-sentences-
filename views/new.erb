@@ -1,5 +1,11 @@
 
-<%= flash[:notice] %>
+<% if flash[:notice]%>
+  <div id="notice">
+  <%= flash[:notice] %>
+  </div>
+<% end %>
+
+
 <p>
 <form action="/sentences/create" method="POST">
 <table>
