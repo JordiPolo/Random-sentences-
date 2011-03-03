@@ -1,11 +1,11 @@
 #encoding: utf-8
 require 'rubygems' #for datamapper
 require 'sinatra'
-require 'omniauth/oauth' #FB
+require 'omniauth/oauth' #FB auth
 require 'datamapper' 
-require 'dm-aggregates'
+require 'dm-aggregates' 
 require 'rack-flash' # the flash[] object
-require 'fb_graph'
+require 'fb_graph' #FB API wrapper
 
 enable :sessions
 use Rack::Flash 
@@ -15,7 +15,7 @@ APP_ID = "205413256141281"
 APP_SECRET = "4d3679eb622a8c46293af883f640037f"
 
 use OmniAuth::Builder do
-  provider :facebook, APP_ID, APP_SECRET, { :scope => 'status_update, publish_stream' }
+  provider :facebook, APP_ID, APP_SECRET, { :scope => 'status_update, publish_stream, offline_access' }
 end
 
 
@@ -31,25 +31,35 @@ class Sentence
     property :meaning, String
     property :created_at, DateTime
     
+    
     def self.random
       Sentence.first(:limit => 1, :offset =>rand(Sentence.count))      
     end
 end
-# automatically upgrade changes , dangerous
+# migrate deletes all the data , dangerous
 Sentence.auto_migrate! unless Sentence.storage_exists?
+
+class User
+  include DataMapper::Resource
+  property :id, Serial
+  property :facebook_id, Integer
+  property :facebook_token, String
+  
+end
+
+# migrate deletes all the data , dangerous
+User.auto_migrate! unless User.storage_exists?
+
+
+
 
 def get_sentence
       @sentence = Sentence.random 
       session["contents"] = @sentence.contents
-      session["name"] = @sentence.speaker
+      session["speaker"] = @sentence.speaker
 #      session["meaning"] = @sentence.meaning
 end
 
-#facebook calls this
-post '/' do
-  get_sentence
-  erb :index
-end
 
 def solve_names
   Sentence.all.each do |sentence|
@@ -81,16 +91,27 @@ def get_ranking
     count = Sentence.count( :speaker => n )
     ranking[n] = count
   end
-  ranking.sort{|a,b| a[1] <=> b[1]}.reverse!.first(5)
-  
+  ranking = ranking.sort{|a,b| a[1] <=> b[1]}.reverse!.first(5)
+  ranking
 end
 
 get '/' do
   get_sentence
+  #raise params.to_s
   @ranking = get_ranking
-    
   erb :index
 end
+
+#facebook calls this
+
+post '/' do  
+  redirect "https://www.facebook.com/dialog/oauth?client_id=#{APP_ID}&redirect_uri=http://localhost:4567/auth/facebook"
+  get_sentence
+  
+  @ranking = get_ranking
+  erb :index
+end
+
 
 get '/todas_las_frases' do
   solve_names 
@@ -108,10 +129,14 @@ end
 get '/postToFB' do
   me = FbGraph::User.me( session['fb_token'])  
   me.feed!(
-  :message => "#{session["speaker"]} dijo:",
-  :name => "ein", 
-  :description => "vaaamo"
-#  :name => "perpetrada por: #{session['speaker']}"
+  :message => "Las frases del barrio",
+  :name => "#{session["speaker"]} dijo:", 
+  :description => "#{session["contents"]}",
+#  :from => {:name => "numbre"},
+#  :caption => "caption",
+  :link =>"http://frasesbarrio.heroku.com",
+  :picture => "http://frasesbarrio.heroku.com/logo.jpg",
+  :attribution => APP_ID
   )
   flash[:notice] = "Enviado a tu FB"
   redirect '/'
@@ -145,9 +170,26 @@ end
 
 
 get '/auth/facebook/callback' do
+#  raise "auth facebook"
   session['fb_auth'] = request.env['omniauth.auth']
   session['fb_token'] = session['fb_auth']['credentials']['token']
   session['fb_error'] = nil
+  
+  if User.get(:facebook_id => session['fb_auth']['uid']).nil?
+    
+  user = User.new( :facebook_id => session['fb_auth']['uid'], 
+                   :facebook_token => session['fb_token'] )
+
+  if user.save!
+    status 201
+    flash[:notice] = "Usuario identificado"
+#    redirect '/task/'+task.id.to_s  
+  else
+    status 412
+    flash[:notice] = "No se pudo identificar a este usuario"
+  end  
+  
+  end
   redirect '/'
 end
 

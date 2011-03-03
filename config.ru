@@ -1,3 +1,3 @@
-require 'frases_barriales' #this is to load faceboku.rb
+require 'frases_barriales' #the application
 
 run Sinatra::Application
