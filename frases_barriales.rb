@@ -130,12 +130,12 @@ get '/postToFB' do
   me = FbGraph::User.me( session['fb_token'])  
   me.feed!(
   :message => "Las frases del barrio",
-  :name => "#{session["speaker"]} dijo:", 
-  :description => "#{session["contents"]}",
+  :name => "#{session['speaker']} dijo:", 
+  :description => "#{session['contents']}",
 #  :from => {:name => "numbre"},
-#  :caption => "caption",
+  :caption => "",
   :link =>"http://frasesbarrio.heroku.com",
-  :picture => "http://frasesbarrio.heroku.com/logo.jpg",
+  :picture => "http://frasesbarrio.heroku.com/images/logo.jpg",
   :attribution => APP_ID
   )
   flash[:notice] = "Enviado a tu FB"
