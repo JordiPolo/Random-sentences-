@@ -105,14 +105,15 @@ end
 #facebook calls this
 
 post '/' do  
-  redirect "https://www.facebook.com/dialog/oauth?client_id=#{APP_ID}&redirect_uri=http://localhost:4567/auth/facebook"
+#  redirect "https://www.facebook.com/dialog/oauth?client_id=#{APP_ID}&redirect_uri=http://localhost:4567/auth/facebook"
+  redirect "http://localhost:4567/auth/facebook"
   get_sentence
   
   @ranking = get_ranking
   erb :index
 end
 
-
+#all the sentences
 get '/todas_las_frases' do
   solve_names 
   @speakers = all_speakers
@@ -120,7 +121,7 @@ get '/todas_las_frases' do
   erb :all_sentences
 end
 
-# new task
+# new sentence
 get '/mumimama' do
   erb :new
 end
@@ -131,9 +132,9 @@ get '/postToFB' do
   me.feed!(
   :message => "Las frases del barrio",
   :name => "#{session['speaker']} dijo:", 
-  :description => "#{session['contents']}",
+  :caption => "#{session['contents']}",
 #  :from => {:name => "numbre"},
-  :caption => "",
+#  :caption => "",
   :link =>"http://frasesbarrio.heroku.com",
   :picture => "http://frasesbarrio.heroku.com/images/logo.jpg",
   :attribution => APP_ID
@@ -175,8 +176,10 @@ get '/auth/facebook/callback' do
   session['fb_token'] = session['fb_auth']['credentials']['token']
   session['fb_error'] = nil
   
-  if User.get(:facebook_id => session['fb_auth']['uid']).nil?
-    
+  
+  user =  User.first(:facebook_id => session['fb_auth']['uid'].to_s)
+  
+  if user.nil?
   user = User.new( :facebook_id => session['fb_auth']['uid'], 
                    :facebook_token => session['fb_token'] )
 
@@ -190,6 +193,7 @@ get '/auth/facebook/callback' do
   end  
   
   end
+  
   redirect '/'
 end
 

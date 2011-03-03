@@ -13,11 +13,6 @@ Quizá quiso decir <%= @sentence.meaning %>  :/<br/>
 <% end %>
 <%=@sentence.speaker  %><br/>
 <% end %>
-
-
-<% if session['fb_token'] %>
-  <a href="/postToFB">Poné en Facebook</a>
-<% end %>
 </div>
 
 <div id="hall" style="margin-top:10px; float:right; text-align:center; padding:0px;background:#F3F3F3; ">
@@ -36,6 +31,15 @@ Quizá quiso decir <%= @sentence.meaning %>  :/<br/>
  </div>
 </div>
 
+<footer style="margin-top:300px; text-align:center">
+<% if session['fb_token'] %>
+  <a href="/postToFB">Poné en Facebook</a>
+<% else %>
+  <a href="/auth/facebook">logeate en Facebook</a>
+<% end %>
+
+
+</footer>
 
 <!--
 
