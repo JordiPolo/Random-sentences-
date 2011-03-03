@@ -183,14 +183,14 @@ get '/auth/facebook/callback' do
   user = User.new( :facebook_id => session['fb_auth']['uid'], 
                    :facebook_token => session['fb_token'] )
 
-  if user.save!
-    status 201
-    flash[:notice] = "Usuario identificado"
-#    redirect '/task/'+task.id.to_s  
-  else
-    status 412
-    flash[:notice] = "No se pudo identificar a este usuario"
-  end  
+#   if user.save!
+#     status 201
+#     flash[:notice] = "Usuario identificado"
+# #    redirect '/task/'+task.id.to_s  
+#   else
+#     status 412
+#     flash[:notice] = "No se pudo identificar a este usuario"
+#   end  
   
   end
   
