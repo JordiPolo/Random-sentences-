@@ -66,12 +66,16 @@ def solve_names
   end
 end
 
-def get_ranking
+def all_speakers
   names = []
   Sentence.all.each do |s|
     names << s.speaker  
   end
   names.uniq!
+end
+
+def get_ranking
+  names = all_speakers
   ranking ={}
   names.each do |n|
     count = Sentence.count( :speaker => n )
@@ -90,6 +94,7 @@ end
 
 get '/todas_las_frases' do
   solve_names 
+  @speakers = all_speakers
   @sentences = Sentence.all
   erb :all_sentences
 end

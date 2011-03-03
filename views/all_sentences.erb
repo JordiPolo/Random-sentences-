@@ -1,4 +1,13 @@
 
+Tenemos <%= @sentences.size %> frases <br/>
+
+<p>
+Perpetradores:<br/> 
+<% @speakers.each do |s| %>
+<%= s %> <br/>
+<% end %>
+</p>
+
 <% @sentences.each do |s| %>
 <p>
 <%=s.contents  %><br/>

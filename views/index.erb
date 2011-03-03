@@ -1,10 +1,10 @@
-
+ 
 <%=session['fb_error']%>
 <%= flash[:notice] %>
 
 <div style="float:center; text-align:center;">
 <h3><%= 'Eeein ' + session['fb_auth']['user_info']['first_name'] + ', ' if session['fb_token'] %>
-    tu frase del dia</h3>
+    tu frase del día</h3>
 
 <% if not @sentence.nil? %>
 <%=@sentence.contents  %><br/>
@@ -21,14 +21,19 @@ Quizá quiso decir <%= @sentence.meaning %>  :/<br/>
 </div>
 
 <div id="hall" style="margin-top:10px; float:right; text-align:center; padding:0px;background:#F3F3F3; ">
-<div id="hall_title" style="padding:5px;background:#A7C942;">
-Hall of Infame 
-</div>
-<div id="infames" style="margin:10px">
-<% @ranking.each do |a| %>
-<%= a[1] %>: <%= a[0] %><br/>
-<% end %>
-</div>
+ <div id="hall_title" style="padding:5px;background:#A7C942;">
+ Hall of Infame 
+ </div>
+
+ <div id="infames" style="margin:10px">
+ <table>
+  <% @ranking.each do |a| %>
+  <tr>
+    <td><%= a[0] %>:</td><td> <%= a[1] %></td>
+  </tr>
+  <% end %>
+ </table>
+ </div>
 </div>
 
 
