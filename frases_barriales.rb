@@ -155,7 +155,8 @@ post '/sentences/create' do
 end
 
 get '/style.css' do
-  scss '/style.scss'
+  send_file '/style.css'
+#  scss '/style.scss'
 end
 
 

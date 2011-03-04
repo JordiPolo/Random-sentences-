@@ -1,4 +1,2 @@
 *.db
 .redcar/tags
-public/.sass-cache/*/*
-public/*.css
