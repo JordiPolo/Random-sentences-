@@ -12,6 +12,8 @@ gem 'dm-sqlite-adapter'
 gem 'rack-flash'
 gem 'fb_graph'
 gem 'i18n'
+gem 'haml'
+
 
 group :test do  
   gem "rspec"

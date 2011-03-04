@@ -6,6 +6,7 @@ require 'datamapper'
 require 'dm-aggregates' 
 require 'rack-flash' # the flash[] object
 require 'fb_graph' #FB API wrapper
+require 'haml'
 
 enable :sessions
 use Rack::Flash 
@@ -38,19 +39,6 @@ class Sentence
 end
 # migrate deletes all the data , dangerous
 Sentence.auto_migrate! unless Sentence.storage_exists?
-
-class User
-  include DataMapper::Resource
-  property :id, Serial
-  property :facebook_id, Integer
-  property :facebook_token, String
-  
-end
-
-# migrate deletes all the data , dangerous
-User.auto_migrate! unless User.storage_exists?
-
-
 
 
 def get_sentence
@@ -166,8 +154,9 @@ post '/sentences/create' do
   end
 end
 
-
-
+get '/style.css' do
+  scss '/style.scss'
+end
 
 
 get '/auth/facebook/callback' do
@@ -175,25 +164,6 @@ get '/auth/facebook/callback' do
   session['fb_auth'] = request.env['omniauth.auth']
   session['fb_token'] = session['fb_auth']['credentials']['token']
   session['fb_error'] = nil
-  
-  
-  user =  User.first(:facebook_id => session['fb_auth']['uid'].to_s)
-  
-  if user.nil?
-  user = User.new( :facebook_id => session['fb_auth']['uid'], 
-                   :facebook_token => session['fb_token'] )
-
-#   if user.save!
-#     status 201
-#     flash[:notice] = "Usuario identificado"
-# #    redirect '/task/'+task.id.to_s  
-#   else
-#     status 412
-#     flash[:notice] = "No se pudo identificar a este usuario"
-#   end  
-  
-  end
-  
   redirect '/'
 end
 
