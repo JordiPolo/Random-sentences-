@@ -106,7 +106,7 @@ end
 
 post '/' do  
 #  redirect "https://www.facebook.com/dialog/oauth?client_id=#{APP_ID}&redirect_uri=http://localhost:4567/auth/facebook"
-  redirect url "/auth/facebook"
+  redirect to "/auth/facebook"
   get_sentence
   
   @ranking = get_ranking
