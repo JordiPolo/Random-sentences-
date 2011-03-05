@@ -14,7 +14,6 @@ require 'fb_graph' #FB API wrapper
 #use Printout
 
 enable :sessions
-
 use Rack::Flash # the flash[] object
 use Rack::Deflater # compress all the outputs
 
@@ -26,95 +25,93 @@ APP_ID = ENV['APP_ID']
 APP_SECRET = ENV['APP_SECRET']
 
 
-use OmniAuth::Builder do
-  provider :facebook, APP_ID, APP_SECRET, { :scope => 'status_update, publish_stream, offline_access' }
-end
 
 
 #database stuff
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/my.db")
 
 class Sentence
-    include DataMapper::Resource
-    property :id, Serial
-    property :contents, Text, :required => true
-    property :speaker, String, :required => true
-    property :meaning, String
-    property :created_at, DateTime
-    
-    
-    def self.random
-      Sentence.first(:limit => 1, :offset =>rand(Sentence.count))      
+  include DataMapper::Resource
+  property :id, Serial
+  property :contents, Text, :required => true
+  property :speaker, String, :required => true
+  property :meaning, String
+  property :created_at, DateTime
+  
+  
+  def self.random
+    Sentence.first(:limit => 1, :offset =>rand(Sentence.count))
+  end
+  
+  
+  def self.solve_names
+    Sentence.all.each do |sentence|
+      if sentence.speaker == "Vic" or sentence.speaker == "Victor"
+        sentence.speaker = "Víctor"
+        sentence.save
+      elsif sentence.speaker =="Johnny"
+        sentence.speaker = "John"
+        sentence.save
+      elsif sentence.speaker =="Alvaro"
+        sentence.speaker = "Álvaro"
+        sentence.save
+      end
     end
+  end
+  
+  def self.all_speakers
+    names = []
+    Sentence.all.each do |s|
+      names << s.speaker
+    end
+    names.uniq!
+  end
+  
+  def self.get_ranking
+    names = Sentence.all_speakers
+    ranking ={}
+    names.each do |n|
+      count = Sentence.count( :speaker => n )
+      ranking[n] = count
+    end
+    ranking = ranking.sort{|a,b| a[1] <=> b[1]}.reverse!.first(5)
+    ranking
+  end
+  
 end
 # migrate deletes all the data , dangerous
 Sentence.auto_migrate! unless Sentence.storage_exists?
 
 
+
+
+
 def get_sentence
-      @sentence = Sentence.random 
-      session["contents"] = @sentence.contents
-      session["speaker"] = @sentence.speaker
+  @sentence = Sentence.random 
+  session["contents"] = @sentence.contents
+  session["speaker"] = @sentence.speaker
 #      session["meaning"] = @sentence.meaning
-end
-
-
-def solve_names
-  Sentence.all.each do |sentence|
-    if sentence.speaker == "Vic" or sentence.speaker == "Victor"
-      sentence.speaker = "Víctor"
-      sentence.save
-    elsif sentence.speaker =="Johnny"
-      sentence.speaker = "John"
-      sentence.save
-    elsif sentence.speaker =="Alvaro"
-      sentence.speaker = "Álvaro"
-      sentence.save
-    end
-  end
-end
-
-def all_speakers
-  names = []
-  Sentence.all.each do |s|
-    names << s.speaker  
-  end
-  names.uniq!
-end
-
-def get_ranking
-  names = all_speakers
-  ranking ={}
-  names.each do |n|
-    count = Sentence.count( :speaker => n )
-    ranking[n] = count
-  end
-  ranking = ranking.sort{|a,b| a[1] <=> b[1]}.reverse!.first(5)
-  ranking
-end
-
-get '/' do
-  get_sentence
-  #raise params.to_s
-  @ranking = get_ranking
+  @ranking = Sentence.get_ranking
   erb :index
 end
 
-#facebook calls this
 
+get '/' do
+  get_sentence    
+end
+
+#The user gets here when he comes from Facebook
 post '/' do  
 #  redirect "https://www.facebook.com/dialog/oauth?client_id=#{APP_ID}&redirect_uri=http://localhost:4567/auth/facebook"
   redirect to "/auth/facebook"
-  get_sentence
-  
-  @ranking = get_ranking
-  erb :index
+  get_sentence  
 end
+
 
 #all the sentences
 get '/todas_las_frases' do
-  solve_names 
-  @speakers = all_speakers
+  Sentence.solve_names 
+  @speakers = Sentence.all_speakers
   @sentences = Sentence.all
   erb :all_sentences
 end
@@ -131,8 +128,7 @@ get '/postToFB' do
   :message => "Las frases del barrio",
   :name => "#{session['speaker']} dijo:", 
   :caption => "#{session['contents']}",
-#  :from => {:name => "numbre"},
-#  :caption => "",
+#  :description => "Aunque quiza quiso decir #{session['meaning']}",
   :link =>"http://frasesbarrio.heroku.com",
   :picture => "http://frasesbarrio.heroku.com/images/logo.jpg",
   :attribution => APP_ID
@@ -145,18 +141,18 @@ end
 
 # create new task   
 post '/sentences/create' do
-  meaning = params[:meaning]
-  if not meaning.nil?
-    meaning = meaning[0..35]
-  end
-  sentence = Sentence.new(:contents => params[:contents], 
-                          :speaker => params[:speaker],
-                          :meaning => params[:meaning] )
+  
+  #because I created the DB with small strings, big fail
+  meaning = params[:meaning]  
+  meaning = meaning[0..40] unless meaning.nil?
+    
+  sentence = Sentence.new( :contents => params[:contents], 
+                           :speaker =>  params[:speaker],
+                           :meaning => params[:meaning] )
   if sentence.save
     status 201
-    flash[:notice] = "Frase creada, tenemos #{Sentence.count} frases ueueue ;)"
-    redirect '/mumimama'
-#    redirect '/task/'+task.id.to_s  
+    flash[:notice] = "Frase creada, tenemos #{Sentence.count} frases ;)"
+    redirect '/mumimama'    
   else
     status 412
     flash[:notice] = "Error creando la frase ;("
@@ -165,6 +161,14 @@ post '/sentences/create' do
 end
 
 
+
+#this gets me authenticated 
+#I am getting a long time token but I am not storing it 
+use OmniAuth::Builder do
+  provider :facebook, APP_ID, APP_SECRET, { :scope => 'status_update, publish_stream, offline_access' }
+end
+
+#this gets called after the user got authenticated
 get '/auth/facebook/callback' do
 #  raise "auth facebook"
   session['fb_auth'] = request.env['omniauth.auth']
