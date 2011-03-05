@@ -13,7 +13,6 @@ require 'fb_graph' #FB API wrapper
 #require './printout'
 #use Printout
 
-
 enable :sessions
 
 use Rack::Flash # the flash[] object
@@ -22,8 +21,6 @@ use Rack::Deflater # compress all the outputs
 
 #facebook secret information
 #http://apps.facebook.com/frases_barriales/
-require './facebook_secret'
-
 #set up those with export APP_ID=... in a bash script
 APP_ID = ENV['APP_ID']
 APP_SECRET = ENV['APP_SECRET']
@@ -32,7 +29,6 @@ APP_SECRET = ENV['APP_SECRET']
 use OmniAuth::Builder do
   provider :facebook, APP_ID, APP_SECRET, { :scope => 'status_update, publish_stream, offline_access' }
 end
-
 
 
 #database stuff
