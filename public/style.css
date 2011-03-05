@@ -9,6 +9,17 @@ body {
   color: #3b5998; 
 }
 
+.facebook a:visited {
+  text-decoration: none;
+  color: #3b5998; 
+}
+
+.facebook a:hover {
+  text-decoration: none;
+  color: #3b5998; 
+}
+
+
 .center {
   float:center; 
   text-align:center;

@@ -1,11 +1,14 @@
-1299324857
+1299325369
 APP_ID	/home/jordi/source/frases_barrio/frases_barriales.rb	APP_ID =
 APP_SECRET	/home/jordi/source/frases_barrio/frases_barriales.rb	APP_SECRET =
+Printout	/home/jordi/source/frases_barrio/printout.rb	  class Printout
 Sentence	/home/jordi/source/frases_barrio/frases_barriales.rb	class Sentence
 all_speakers	/home/jordi/source/frases_barrio/frases_barriales.rb	def all_speakers
 app	/home/jordi/source/frases_barrio/spec/frases_barriales.rb	  def app
+call	/home/jordi/source/frases_barrio/printout.rb	    def call(env)
 clear_session	/home/jordi/source/frases_barrio/frases_barriales.rb	def clear_session
 get_ranking	/home/jordi/source/frases_barrio/frases_barriales.rb	def get_ranking
 get_sentence	/home/jordi/source/frases_barrio/frases_barriales.rb	def get_sentence
+initialize	/home/jordi/source/frases_barrio/printout.rb	    def initialize(app)
 random	/home/jordi/source/frases_barrio/frases_barriales.rb	    def self.random
 solve_names	/home/jordi/source/frases_barrio/frases_barriales.rb	def solve_names
