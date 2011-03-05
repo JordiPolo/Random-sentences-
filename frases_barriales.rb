@@ -164,12 +164,6 @@ post '/sentences/create' do
   end
 end
 
-get '/style.css' do
-raise "sssssss"
-  halt 304 #if Time.httpdate(request.env['HTTP_IF_MODIFIED_SINCE']).to_i >= time.to_i
-  send_file '/style.css'  
-end
-
 
 get '/auth/facebook/callback' do
 #  raise "auth facebook"

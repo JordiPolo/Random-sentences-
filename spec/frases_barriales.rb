@@ -2,10 +2,8 @@ require 'spec_helper'
 
 set :environment, :test
 
-describe "My sentences" do
+describe "The pages" do
   
-  include Rack::Test::Methods
-
   def app
     @app ||= Sinatra::Application
   end
@@ -13,6 +11,7 @@ describe "My sentences" do
   @HTML_PAGES = ["/", "/todas_las_frases", "/mumimama"]
   @CSS_STYLES = ["/style.css"]
   @ALL_PAGES = @HTML_PAGES + @CSS_STYLES
+  
   
   #tests for every single valid URL
   @ALL_PAGES.each do |page|
@@ -29,6 +28,27 @@ describe "My sentences" do
     end
     
   end
+    
+  #Test for all the HTML      
+  @HTML_PAGES.each do |page|
+    context "for the url #{page}" do
+      it "should return the correct content-type" do
+        get page
+        last_response.headers["Content-Type"].should == "text/html;charset=utf-8"
+      end
+    end
+  end
+  
+  
+  @CSS_STYLES.each do |page|
+    context "for the url #{page}" do
+      it "should return the correct content-type" do
+        get page
+        last_response.headers["Content-Type"].should == 'text/css;charset=utf-8'
+      end
+    end
+  end  
+  
   
   
   #Test for all the invalid URLs
@@ -37,22 +57,24 @@ describe "My sentences" do
     last_response.status.should == 404
   end
 
-  #Test for all the HTML
-        
-  @HTML_PAGES.each do |page|
-    it "should return the correct content-type" do
-      get page
-      last_response.headers["Content-Type"].should == "text/html;charset=utf-8"
-    end
+  
+  #tests for particular URLs
+  it "/mumimama should show a form" do
+    get "/mumimama"
+    last_response.body.include? "<input"
   end
   
-  @CSS_STYLES.each do |page|
-    it "should return the correct content-type" do
-      get page
-      last_response.headers["Content-Type"].should == 'text/css;charset=utf-8'
-    end
-  end  
+  it "should show Hall of infame in the main page" do
+    get "/"
+    last_response.body.include? "Hall of"
+  end
   
-  
+end
+
+
+
+describe "Sentence" do
+
+
 end
 
