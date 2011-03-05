@@ -12,11 +12,11 @@ gem 'dm-sqlite-adapter'
 gem 'rack-flash'
 gem 'fb_graph'
 gem 'i18n'
-gem 'haml'
 
 
 group :test do  
   gem "rspec"
   gem "rack-test"
+#  gem 'rack-contrib'  
 end
 

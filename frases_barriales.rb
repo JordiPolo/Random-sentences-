@@ -1,4 +1,5 @@
 #encoding: utf-8
+
 require 'rubygems' #for datamapper
 require 'sinatra'
 require 'omniauth/oauth' #FB auth
@@ -6,14 +7,27 @@ require 'datamapper'
 require 'dm-aggregates' 
 require 'rack-flash' # the flash[] object
 require 'fb_graph' #FB API wrapper
-require 'haml'
+
+
+#my rack middleware to print HTTP headers and environment
+#require './printout'
+#use Printout
+
 
 enable :sessions
-use Rack::Flash 
 
+use Rack::Flash # the flash[] object
+use Rack::Deflater # compress all the outputs
+
+
+#facebook secret information
 #http://apps.facebook.com/frases_barriales/
-APP_ID = "205413256141281"
-APP_SECRET = "4d3679eb622a8c46293af883f640037f"
+require './facebook_secret'
+
+#set up those with export APP_ID=... in a bash script
+APP_ID = ENV['APP_ID']
+APP_SECRET = ENV['APP_SECRET']
+
 
 use OmniAuth::Builder do
   provider :facebook, APP_ID, APP_SECRET, { :scope => 'status_update, publish_stream, offline_access' }
@@ -155,8 +169,9 @@ post '/sentences/create' do
 end
 
 get '/style.css' do
-  send_file '/style.css'
-#  scss '/style.scss'
+raise "sssssss"
+  halt 304 #if Time.httpdate(request.env['HTTP_IF_MODIFIED_SINCE']).to_i >= time.to_i
+  send_file '/style.css'  
 end
 
 

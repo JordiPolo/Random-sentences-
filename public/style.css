@@ -1,15 +1,41 @@
 body {
   font-family: Arial;
   font-size: 20px;
-  margin: 100px; }
+  margin: 100px; 
+}
 
 .facebook a {
   text-decoration: none;
-  color: #3b5998; }
+  color: #3b5998; 
+}
 
+.center {
+  float:center; 
+  text-align:center;
+}
+  
 #notice {
   background: #FFF6BF;
   border-top: 2px solid #FFD324;
   border-bottom: 2px solid #FFD324;
   margin: 10px auto;
-  padding: 5px 20px; }
+  padding: 5px 20px; 
+}
+
+#hall {
+  margin-top:10px; 
+  float:right; 
+  text-align:center; 
+  padding:0px;
+  background:#F3F3F3;
+}
+
+#hall_title {
+  padding:5px;
+  background:#A7C942;
+}
+
+footer{
+  margin-top:300px; 
+  text-align:center
+}
