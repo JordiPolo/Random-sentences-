@@ -25,10 +25,13 @@ APP_ID = ENV['APP_ID']
 APP_SECRET = ENV['APP_SECRET']
 
 
-
-
 #database stuff
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/my.db")
+
+configure :test do
+  DataMapper.setup(:default, "sqlite::memory:")
+end
+
 
 class Sentence
   include DataMapper::Resource
@@ -59,16 +62,15 @@ class Sentence
     end
   end
   
-  def self.all_speakers
-    names = []
-    Sentence.all.each do |s|
-      names << s.speaker
-    end
+  def self.all_speakers    
+    names = Sentence.all.map {|s| s.speaker} 
     names.uniq!
+    names
   end
   
-  def self.get_ranking
+  def self.ranking
     names = Sentence.all_speakers
+    
     ranking ={}
     names.each do |n|
       count = Sentence.count( :speaker => n )
@@ -91,7 +93,7 @@ def get_sentence
   session["contents"] = @sentence.contents
   session["speaker"] = @sentence.speaker
 #      session["meaning"] = @sentence.meaning
-  @ranking = Sentence.get_ranking
+  @ranking = Sentence.ranking
   erb :index
 end
 

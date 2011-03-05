@@ -1,8 +1,9 @@
-require File.join(File.dirname(__FILE__), '..', 'frases_barriales.rb')
+require_relative '../frases_barriales.rb'
 
-require 'rspec'
 require 'sinatra'
+require 'rspec'
 require 'rack/test'
+
 
 # set test environment
 set :environment, :test
