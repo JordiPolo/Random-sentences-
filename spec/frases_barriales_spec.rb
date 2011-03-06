@@ -13,7 +13,7 @@ describe "The pages" do
     @app ||= Sinatra::Application  
   end
   
-  @HTML_PAGES = ["/", "/todas_las_frases", "/mumimama"]
+  @HTML_PAGES = ["/", "/todas_las_frases"]
   @CSS_STYLES = ["/style.css"]
   @ALL_PAGES = @HTML_PAGES + @CSS_STYLES
   
@@ -62,17 +62,26 @@ describe "The pages" do
     last_response.status.should == 404
   end
 
+    #tests for particular URLs
+  it "should show Hall of infame in the main page" do
+    get "/"
+    last_response.body.include? "Hall of"
+  end
   
-  #tests for particular URLs
+  it "/mumimama should redirect to /login when not logged in" do
+    authorize "diego", "raistlin"
+    
+    get "/mumimama"
+    
+    last_response.body.include? "<input"
+  end
+  
   it "/mumimama should show a form" do
     get "/mumimama"
     last_response.body.include? "<input"
   end
   
-  it "should show Hall of infame in the main page" do
-    get "/"
-    last_response.body.include? "Hall of"
-  end
+  
   
 end
 
