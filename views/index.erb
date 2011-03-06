@@ -11,17 +11,22 @@
       tu frase del día</h3>
 
  <% if not @sentence.nil? %>
-  <%=@sentence.contents  %><br/>
-  <% if not @sentence.meaning.empty? %>
-    Quizá quiso decir <%= @sentence.meaning %>  :/<br/>
-  <% end %>
+  <div style="padding:20px;"> 
+    <%=@sentence.contents  %>
+  </div>
+  <div class="speaker">
   <%=@sentence.speaker  %><br/>
+  <% if not @sentence.meaning.empty? %>
+    Quizá quiso decir <%= @sentence.meaning %> <br/>
+  <% end %>
+  
  <% end %>
+  </div>
 </div>
 
 <div id="hall">
   <div id="hall_title" >
-    Hall of Infame
+    Hall of Fame
   </div>
 
   <div id="infames" style="margin:10px">

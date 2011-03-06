@@ -69,18 +69,52 @@ describe "The pages" do
   end
   
   it "/mumimama should redirect to /login when not logged in" do
-    authorize "diego", "raistlin"
-    
+    #authorize "diego", "raistlin"
     get "/mumimama"
-    
-    last_response.body.include? "<input"
+    follow_redirect!
+    puts last_request.url
+    last_request.url.should include "login"  
+    last_response.should be_ok
   end
   
-  it "/mumimama should show a form" do
-    get "/mumimama"
-    last_response.body.include? "<input"
+  it "/login should show a ask for name and password" do
+    get "/login"
+    last_response.body.include? "Nombre"
+    last_response.body.include? "Password"
   end
   
+  it "/mumimama should show a ask for sentence and speaker" do
+    get "/login"
+    last_response.body.include? "frase"
+    last_response.body.include? "perpetrador"
+  end
+  
+  it "The correct password should log in the user" do
+    post "/login", :name => "diego", :password =>"raistlin"
+    follow_redirect!
+    last_request.session['logged_in'].should == 1 
+  end
+  
+  it "Incorrect password should not log in the user" do
+    post "/login", :name => "minga", :password =>"raistlin"
+    follow_redirect!    
+    last_request.session['logged_in'].should_not == 1        
+  end
+  
+  
+  it "The correct password should redirect to new sentence" do
+    post "/login", :name => "diego", :password =>"raistlin"
+    follow_redirect!
+    last_request.url.should include "mumimama"  
+    last_response.should be_ok
+  end
+  
+  it "incorrect password should redirect to log in" do
+    post "/login", :name => "minga", :password =>"raistlin"
+    follow_redirect!
+    last_request.url.should include "login"  
+    last_response.should be_ok    
+  end
   
   
 end

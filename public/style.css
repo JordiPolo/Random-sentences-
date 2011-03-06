@@ -1,7 +1,7 @@
 body {
   font-family: Arial;
   font-size: 20px;
-  margin: 100px; 
+  margin: 80px; 
 }
 
 .facebook a {
@@ -46,7 +46,12 @@ body {
   background:#A7C942;
 }
 
+.speaker {
+  font-size:90%;  
+}
+
 footer{
-  margin-top:300px; 
+  display:block;
+  margin-top:260px; 
   text-align:center
 }

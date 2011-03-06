@@ -1,0 +1,31 @@
+
+<% if flash[:notice]%>
+  <div id="notice">
+  <%= flash[:notice] %>
+  </div>
+<% end %>
+
+<p>
+Nombre: El nombre de quien esta corriendo el servidor de TS</br>
+Password: Su personaje de rol favorito</br>
+
+Los dos en minusculas </br>
+</p>
+
+<p>
+<form action="/login" method="POST">
+<table>
+  <tr>
+   <td>Nombre:<td/>
+   <td><input id="contents" type="text" name="name" style="width:350px" ></td>
+  </tr>
+  <tr>
+    <td>Password:<td/>
+    <td><input type="text" name="password" id="speaker" style="width:100px" ></td>
+  </tr>
+</table>
+
+  <input type="submit" value="Logearse!"/>
+</form>
+</p>
+<a href="/">ver la de hoy</a>
