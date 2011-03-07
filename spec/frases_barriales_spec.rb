@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+USER = ENV['SENTENCES_USER']
+PASSWORD = ENV['SENTENCES_PASSWORD']
 
 describe "The pages" do
 
@@ -90,27 +92,27 @@ describe "The pages" do
   end
   
   it "The correct password should log in the user" do
-    post "/login", :name => "diego", :password =>"raistlin"
+    post "/login", :name => USER, :password =>PASSWORD
     follow_redirect!
     last_request.session['logged_in'].should == 1 
   end
   
   it "Incorrect password should not log in the user" do
-    post "/login", :name => "minga", :password =>"raistlin"
+    post "/login", :name => "minga", :password =>"raistliaan"
     follow_redirect!    
     last_request.session['logged_in'].should_not == 1        
   end
   
   
   it "The correct password should redirect to new sentence" do
-    post "/login", :name => "diego", :password =>"raistlin"
+    post "/login", :name => USER, :password =>PASSWORD
     follow_redirect!
     last_request.url.should include "mumimama"  
     last_response.should be_ok
   end
   
   it "incorrect password should redirect to log in" do
-    post "/login", :name => "minga", :password =>"raistlin"
+    post "/login", :name => "minaaga", :password =>"raistlerwerin"
     follow_redirect!
     last_request.url.should include "login"  
     last_response.should be_ok    

@@ -22,6 +22,8 @@ use Rack::Deflater # compress all the outputs
 #set up those with export APP_ID=... in a bash script
 APP_ID = ENV['APP_ID']
 APP_SECRET = ENV['APP_SECRET']
+ADMIN_USER = ENV['SENTENCES_USER']
+ADMIN_PASSWORD = ENV['SENTENCES_PASSWORD']
 
 
 
@@ -73,7 +75,7 @@ get '/login' do
 end
 
 post '/login' do
-  if params[:name] == 'diego' && params[:password] == 'raistlin'
+  if params[:name] == ADMIN_USER && params[:password] == ADMIN_PASSWORD
     
     session['logged_in'] = 1    
     flash[:notice] = "Te has autentificado"
